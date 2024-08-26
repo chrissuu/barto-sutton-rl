@@ -11,8 +11,9 @@ class Player:
             board.state[i][j] = self.marker
             return
         else:
+            # print(table)
             if table:
-                print("HERE")
+
                 return self.strategy(board, self.marker, alpha, table)
             
             else:

@@ -1,3 +1,4 @@
+from utils import elements_eq
 # def rotated(state):
 
 # def is_similar(b1, b2):
@@ -32,9 +33,9 @@ def check_winners(state):
         if none_counter == 0 and len(winners) == 0:
             winners.append("TIE")
         
-        if none_counter == 9:
-            return None 
-        
+        while None in winners:
+            winners.remove(None)
+
         if len(winners) == 0:
             return None
         else:
@@ -54,27 +55,36 @@ def count_markers(board):
 
     return xs, os
 
-def is_board(board):
+def is_board(board, debug_prints = False):
 
     if len(board) != 3:
-        print("1")
+        if debug_prints:
+
+            print("1")
         return False
     
     for i in range(3):
         if len(board[i]) != 3:
-            print("2")
+            if debug_prints:
+
+                print("2")
             return False
     
     (xs, os) = count_markers(board)
 
     if abs(xs - os) > 1:
-        print("3")
+        if debug_prints:
+
+            print("3")
         return False
 
     if check_winners(board) != None:
-        print("4")
         # print(check_winners(board))
         if len(check_winners(board)) > 1:
+            if debug_prints:
+
+                print("4")
+
             return False
         
 
@@ -89,46 +99,48 @@ class Board:
             temp_row2 = []
             temp_row3 = []
             for i in range(3):
-                temp_row1.append(i)
-                temp_row2.append(i + 3)
-                temp_row3.append(i + 6)
+                temp_row1.append(state[i])
+                temp_row2.append(state[i + 3])
+                temp_row3.append(state[i + 6])
             self.state = [temp_row1, temp_row2, temp_row3]
         else:
             self.state = state
-        assert(is_board(self.state))
+
+        # assert(is_board(self.state))
 
     def check_finished(self):
-        # check rows
-        for row in self.state:
+        # assert(is_board(self.state))
 
-            if row[0] == row[1] == row[2]:
-                return row[0]
-            
-        # check cols
-        for i in range(3):
-
-            if self.state[i][0] == self.state[i][1] == self.state[i][2]:
-               return self.state[i][0]
-            
-        # check diagonals
-        if self.state[0][0] == self.state[1][1] == self.state[2][2]: 
-            return self.state[0][0]
-        
-        if self.state[0][2] == self.state[1][1] == self.state[2][0]:
-            return self.state[0][2]
-        
-        # check tie
         none_counter = 0
         for i in range(3):
             for j in range(3):
                 if self.state[i][j] == None:
                     none_counter += 1
 
+        row1 = self.state[0]
+        row2 = self.state[1]
+        row3 = self.state[2]
+
+        col1 = [self.state[i][0] for i in range(3)]
+        col2 = [self.state[i][1] for i in range(3)]
+        col3 = [self.state[i][2] for i in range(3)]
+
+        diag1 = [self.state[i][i] for i in range(3)]
+        diag2 = [self.state[i][2-i] for i in range(3)]
+
+        winning_possibilities = [row1,row2,row3,col1,col2,col3,diag1,diag2]
+
+        for winning_possibility in winning_possibilities:
+
+            if elements_eq(winning_possibility) and winning_possibility[0] != None:
+                return winning_possibility[0]
+        
+        # no winners
         if none_counter == 0:
             return "TIE"
-        
-        return None
 
+        return None
+    
 
     def __repr__(self):
         res = ""
@@ -140,3 +152,15 @@ class Board:
                     res += 'N'
 
         return res
+    
+    def print(self):
+        res = ""
+        for i in range(3):
+            for j in range(3):
+                if self.state[i][j] != None:
+                    res += self.state[i][j]
+                else:
+                    res += 'N'
+            res += '\n'
+        print(res)
+        return

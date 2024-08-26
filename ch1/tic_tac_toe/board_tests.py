@@ -52,3 +52,28 @@ s6 = [['O', 'X','X'],
 B6 = Board(s6)
 
 assert(not is_board(B6.state))
+
+s8 = [['O','X','X'],
+      ['O', None, 'X'],
+      ['O','O','X']]
+
+B8 = Board(s8)
+
+assert(not is_board(B8.state, debug_prints=True))
+
+s9 = [['X','O',None],
+      ['X','O','X'],
+      ['X','O','O']]
+
+B9 = Board(s9)
+
+assert(not is_board(B9.state, debug_prints=True))
+
+s10 = [[None,'X',None],
+      ['O','X','X'],
+      ['O','X','O']]
+
+B10 = Board(s10)
+
+assert(is_board(B10.state, debug_prints=True))
+print(B10.check_finished())
