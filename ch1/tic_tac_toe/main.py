@@ -72,8 +72,7 @@ def s2(board, marker, alpha, table, x = 5):
     
     return
 
-
-# initial table
+# initialize initial table
 def initial_table(m1, m2):
 
     table = {}
@@ -107,6 +106,8 @@ def initial_table(m1, m2):
     # print(len(table.keys()))
     return table
 
+# plays 1 game, given 2 player objects, the initial (or learnable) table, 
+# a board object, and the alpha learning rate, returns the winner (TIE if no winner)
 def play_game(p1, p2, table, board, alpha):
     # board.print()
     while board.check_finished() == None:
@@ -120,6 +121,8 @@ def play_game(p1, p2, table, board, alpha):
         # board.print()
     return board.check_finished()
 
+# given players p1,p2, and initial table, plays "iteration" number of games
+# returing array of winners
 def play_multiple_games(p1, p2, table, iterations):
     board = Board([[None, None, None] for i in range(3)])
 
