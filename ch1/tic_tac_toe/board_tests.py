@@ -23,7 +23,7 @@ s3 = [['X', 'X','O'],
       ['O', 'O','X']]
 B3 = Board(s3)
 
-assert(is_board(B3.state))
+assert(is_board(B3.state, debug_prints=True))
 assert(B3.check_finished() == 'X')
 
 # right diagonal winner test case
@@ -43,7 +43,6 @@ s5 = [['O', 'X','X'],
 B5 = Board(s5)
 
 assert(not is_board(B5.state))
-assert(B5.check_finished() == 'O')
 
 # not a valid board test case (two winners)
 s6 = [['O', 'X','X'],

@@ -4,43 +4,41 @@ from utils import elements_eq
 # def is_similar(b1, b2):
 
 def check_winners(state):
-        winners = []
-        # check rows
-        for row in state:
+    # assert(is_board(state))
 
-            if row[0] == row[1] == row[2]:
-                winners.append(row[0])
-            
-        # check cols
-        for i in range(3):
-            if state[0][i] == state[1][i] == state[2][i]:
-                winners.append(state[0][i])
-            
-        # check diagonals
-        if state[0][0] == state[1][1] == state[2][2]: 
-            winners.append(state[0][0])
-        
-        if state[0][2] == state[1][1] == state[2][0]:
-            winners.append(state[0][2])
-        
-        # check tie
-        none_counter = 0
-        for i in range(3):
-            for j in range(3):
-                if state[i][j] == None:
-                    none_counter += 1
+    none_counter = 0
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] == None:
+                none_counter += 1
 
-        if none_counter == 0 and len(winners) == 0:
-            winners.append("TIE")
-        
-        while None in winners:
-            winners.remove(None)
+    row1 = state[0]
+    row2 = state[1]
+    row3 = state[2]
 
-        if len(winners) == 0:
-            return None
-        else:
-            return winners
-        
+    col1 = [state[i][0] for i in range(3)]
+    col2 = [state[i][1] for i in range(3)]
+    col3 = [state[i][2] for i in range(3)]
+
+    diag1 = [state[i][i] for i in range(3)]
+    diag2 = [state[i][2-i] for i in range(3)]
+
+    winning_possibilities = [row1,row2,row3,col1,col2,col3,diag1,diag2]
+
+    winners = []
+    for winning_possibility in winning_possibilities:
+
+        if elements_eq(winning_possibility) and winning_possibility[0] != None:
+            winners.append(winning_possibility[0])
+    
+    if len(winners) != 0:
+        return winners
+    # no winners
+    if none_counter == 0:
+        return ["TIE"]
+
+    return None
+
 def count_markers(board):
     xs = 0
     os = 0
