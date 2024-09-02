@@ -5,6 +5,7 @@ class Player:
         self.marker = marker
         self.strategy = strategy
 
+    #given board and strategy, use strategy on current board state
     def make_move(self, board, alpha, table = None, move = None):
         if move:
             (i,j) = move

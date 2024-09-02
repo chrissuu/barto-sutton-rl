@@ -76,14 +76,28 @@ def is_board(board, debug_prints = False):
             print("3")
         return False
 
-    if check_winners(board) != None:
+    winners = check_winners(board)
+
+    if winners != None:
         # print(check_winners(board))
-        if len(check_winners(board)) > 1:
+        none_counter = 0
+
+        for i in range(len(board)):
+            for j in range(len(board)):
+                if board[i][j] == None:
+                    none_counter += 1
+        
+        
+        if none_counter != 0 and len(check_winners(board)) > 1:
             if debug_prints:
 
                 print("4")
 
-            return False
+            for i in range(1,len(winners)):
+                if winners[i] != winners[i-1]:
+                    return False
+                
+            return True
         
 
     return True

@@ -18,11 +18,20 @@ def aggregate_and_print(list):
             D[e] = 1
 
     res = ""
-    for key in D.keys():
+    for key in sorted(D.keys()):
         res += f"{key}: {D[key]}\n"
 
     print(res)
     return res
+
+# aggregate a list in intervals and return frequencies
+def aggregate_in_intervals_and_print(list, interval):
+    LD = [list[interval * i: interval * (i+1)] for i in range(len(list)//interval)]
+    for L in LD:
+        aggregate_and_print(L)
+
+    return
+
 
 #check if all elements of a three element list are the same
 def elements_eq(list):

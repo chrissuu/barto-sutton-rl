@@ -1,6 +1,6 @@
 from player import Player
 from board import Board, is_board
-from utils import find_free_moves, aggregate_and_print
+from utils import find_free_moves, aggregate_and_print, aggregate_in_intervals_and_print
 from itertools import permutations, product
 import random
 import copy
@@ -42,6 +42,10 @@ def get_move_distribution(board, free_moves, table, marker):
 # given random variable R in [0, 100], picks an exploratory move with probability x
 def pick_move(move_distribution, r, x):
     # exploratory move
+
+    if len(move_distribution) == 1:
+        return False, move_distribution[0][0]
+    
     if r <= x:
         move_distribution.pop(-1)
         k = random.randint(0, len(move_distribution) - 1)
@@ -50,7 +54,7 @@ def pick_move(move_distribution, r, x):
         return False, move_distribution[-1][0]
     
 # learnable policy, with x% of moves being exploratory -> 100-x % are exploitary
-def s2(board, marker, alpha, table, x = 5):
+def s2(board, marker, alpha, table, x = 30):
     free_moves = find_free_moves(board)
     r = random.randint(0, 100)
 
@@ -76,6 +80,7 @@ def s2(board, marker, alpha, table, x = 5):
 def initial_table(m1, m2):
 
     table = {}
+    # board_family = {}
 
     games = list(product([m1,m2,None], repeat=9))
     # print(len(games))
@@ -103,7 +108,7 @@ def initial_table(m1, m2):
             else:
                 table[temp_B.__repr__()] = 0.5
 
-    # print(len(table.keys()))
+    print(len(table.keys()))
     return table
 
 # plays 1 game, given 2 player objects, the initial (or learnable) table, 
@@ -111,26 +116,29 @@ def initial_table(m1, m2):
 def play_game(p1, p2, table, board, alpha):
     # board.print()
     while board.check_finished() == None:
-
-        p1.make_move(board, None, None)
+        p2.make_move(board, alpha, table)
+        board.print()
+        
         # board.print()
         if board.check_finished() != None:
             break
 
-        p2.make_move(board, alpha, table)
+        p1.make_move(board, None, None)
+        board.print()
         # board.print()
     return board.check_finished()
 
 # given players p1,p2, and initial table, plays "iteration" number of games
 # returing array of winners
-def play_multiple_games(p1, p2, table, iterations):
+def play_multiple_games(p1, p2, table, alpha, iterations):
     board = Board([[None, None, None] for i in range(3)])
 
     winners = []
-    alpha = 0.5
+
     for i in range(iterations):
-        if iterations % 1000 == 0:
-            alpha /= 1.3
+        print(f"GAME {i} ---------------------------")
+        # if iterations % 1000 == 0:
+            # alpha /= 1.3
         # game = play_game(p1, p2, table, board)
 
         winners.append(play_game(p1, p2, table, board, alpha))
@@ -139,12 +147,15 @@ def play_multiple_games(p1, p2, table, iterations):
 
     
     # print(winners)
-    # print(table)
+    print(table)
     return winners
 
 p1 = Player("X", s1)
 p2 = Player("O", s2)
+alpha = 0.05
 
-winners = play_multiple_games(p1, p2, initial_table(p1.marker, p2.marker), 100000)
+winners = play_multiple_games(p1, p2, initial_table(p1.marker, p2.marker),alpha, 500000)
 
-aggregate_and_print(winners)
+# aggregate_and_print(winners)
+
+aggregate_in_intervals_and_print(winners, 10000)
